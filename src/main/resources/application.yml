@@ -1,0 +1,76 @@
+spring:
+  application:
+    name: munjin-batch
+  profiles:
+    active: local
+  batch:
+    job:
+      name: ${job.name:NONE}
+    jdbc:
+      initialize-schema: always
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://172.16.10.240:5432/batch
+    username: postgres
+    password: postgres
+    hikari:
+      minimum-idle: 4
+      maximum-pool-size: 6
+      validation-timeout: 10000
+      connection-timeout: 0
+      idle-timeout: 0
+      max-lifetime: 30000
+
+# Logging
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    name: ${spring.application.name}_${job.names:NONE}
+emr:
+  edge:
+    path:
+      base-url: https://his-authserver.edgennext.com
+      login-path: /connect/authtoken
+      verification-path: /verification/auth
+      proxy-base-url: https://his-interfaceproxy.edgennext.com
+      patient-history-path: /external/self-health-questionnaire/outpatient-history/search
+      patient-walk-in-path: /external/self-health-questionnaire/walk-in-treatement-outpatient
+    auth:
+      scope: chis-api chis-external-interface-client-scope
+      grant-type: client_credentials
+      hospitals:
+        - code: seoul
+          client-id: chis-external-interface-bplusmunjin-seoulbumin
+          client-secret: A6CCD808-218D-49F7-8C9D-0B8C25E62628
+          tenant-id: tseoulbumin
+          hospital-id: hseoulbumin
+        - code: busan
+          client-id: chis-external-interface-bplusmunjin-busanbumin
+          client-secret: 8407278B-8A51-479D-881E-125B5BD6F2BF
+          tenant-id: tbusanbumin
+          hospital-id: hbusanbumin
+        - code: haeundae
+          client-id: chis-external-interface-bplusmunjin-haeundaebumin
+          client-secret: 0FC630AF-E79D-4DC9-A8C1-3B802994787E
+          tenant-id: thaeundaebumin
+          hospital-id: hhaeundaebumin
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+
+batch:
+  thread:
+    default:
+      pool-size: 10
+  reader:
+    default:
+      chunk-size: 1000
+
+---
+spring:
+  config:
+    activate:
+      on-profile: devel

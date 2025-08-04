@@ -1,6 +1,6 @@
 spring:
   application:
-    name: munjin-batch
+    name: squereplus-batch
   profiles:
     active: local
   batch:
@@ -8,6 +8,24 @@ spring:
       name: ${job.name:NONE}
     jdbc:
       initialize-schema: always
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    ### hibernate settings
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+        default_batch_fetch_size: 100
+        show_sql: true
+        use_sql_comments: true
+        format_sql: true
+        order_inserts: true
+        order_updates: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://172.16.10.240:5432/batch
@@ -21,11 +39,20 @@ spring:
       idle-timeout: 0
       max-lifetime: 30000
 
+  data:
+    redis:
+      host: 172.16.10.240
+      port: 6379
 # Logging
 logging:
   config: classpath:logback-spring.xml
   file:
     name: ${spring.application.name}_${job.names:NONE}
+squereplus:
+  path:
+#    base-url: https://firstchart-fr-hospital.whatailsyou.io
+    base-url: localhost:9001
+    hospital-accounts-path: /munjin/internal/v1/batch/hospital-accounts
 emr:
   edge:
     path:
